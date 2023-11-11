@@ -8,3 +8,6 @@ pytesseract==0.3.10
 scikit_learn==1.1.2
 tika==2.6.0
 typing_extensions==4.8.0
+
+
+Main Program to execution is File_Organizer.py

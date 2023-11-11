@@ -31,6 +31,7 @@ BASE_DIR = r'C:\Users\msi\OneDrive - acsp.ac.th\Desktop\Text Classification\data
 LABELS = ['accounts', 'biology', 'com-tech', 'geography', 'history', 'maths', 'physics']
 
 def creat_data_set():
+    """ Create Data-Set """
     with open('data.txt', 'w', encoding='utf8', newline='') as outfile:
         for label in LABELS:
             dir = r'%s\%s' %(BASE_DIR, label)
@@ -44,6 +45,7 @@ def creat_data_set():
                     outfile.write('%s\t%s\t%s\n' %(label, filename, text))
 
 def setup_docs():
+    """ Store Data in Memory """
     docs = []
     with open('data.txt', 'r', encoding='utf8') as datafile:
         for row in datafile:
@@ -58,23 +60,19 @@ def setup_docs():
     return docs
 
 def clean_text(text):
+    """ Data Preparation """
     text = text.translate(str.maketrans('', '', string.punctuation))
     text = text.lower()
     return text
 
 def get_tokens(text):
+    """  """
     tokens = word_tokenize(text)
     tokens = [t for t in tokens if not t in stop_words]
-    return tokens
-
-def get_tokens(text):
-    tokens = word_tokenize(text)
-    
-    tokens = [t for t in tokens if not t in stop_words]
-
     return tokens
 
 def print_frequency_dist(docs):
+    """ Show Frequency """
     tokens = defaultdict(list)
     
     for doc in docs:
@@ -101,6 +99,7 @@ def print_frequency_dist(docs):
 
 #Split Data to train and test
 def get_split(docs):
+    """ Split Test Train Data """
     #rd.shuffle(docs)
     
     X_train = []
@@ -121,6 +120,7 @@ def get_split(docs):
     return X_train, X_test, y_train, y_test
 
 def evaluate_classifier(title, classifier, vectorizer, X_test, y_test):
+    """ Show Evaluate Classifier [Title: Precision, Recall, F1]"""
     X_test_tfidf = vectorizer.transform(X_test)
     y_pred = classifier.predict(X_test_tfidf)
     
@@ -139,6 +139,7 @@ def evaluate_classifier(title, classifier, vectorizer, X_test, y_test):
 
 #Training
 def train_classifier(docs):
+    """ Training """
     X_train, X_test, y_train, y_test = get_split(docs)
     
     #text to Vector
@@ -150,7 +151,6 @@ def train_classifier(docs):
     #print(X_train[0])
     #print("\n\n\n")
     #print(X_test[0])
-    
     #Create doc-term matrix
     dtm = vectorizer.fit_transform(X_train)
     
@@ -169,6 +169,7 @@ def train_classifier(docs):
     
 
 def classify(text):
+    """ Classify Text [Main] """
     #load classifier
     script_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
     clf_filename = fr'{script_directory}\naive_bayes_classifier.pkl'
@@ -184,12 +185,12 @@ def classify(text):
 
 if __name__ == '__main__':
     #creat_data_set()
-    #docs = setup_docs()
+    docs = setup_docs()
     #print(docs)
     #print(len(docs))
     #print_frequency_dist(docs)
     
-    #train_classifier(docs)
+    train_classifier(docs)
 
     #new_doc = get_text_from_img(img)
     #classify(new_doc)
