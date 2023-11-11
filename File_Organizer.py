@@ -7,27 +7,35 @@ import customtkinter as ct
 import pathlib
 from PIL import Image
 
+#Module for txt Classification
 from txt_classification import *
 
 #setup icon button
 img_path = os.path.dirname(os.path.realpath(__file__))
-img_1 = ct.CTkImage(Image.open(img_path + 
-                    "/add-folder_v3.png"), size=(35, 35))
+image_1 = ct.CTkImage(Image.open(img_path +
+                        "/cover2.png"), size=(400,310))
+image_2 = ct.CTkImage(Image.open(img_path +
+                        "/sticker3.png"), size=(60,60))
 
 #main window
 root = ct.CTk()
+root.geometry("450x580")
 root.title("File Organizer")
-root.geometry("520x244")
+root.config(bg='#a38a5c')
 #root.iconbitmap("bocchi.ico")
+frame = ct.CTkFrame(master=root, corner_radius=20, fg_color='#e4dfcb')
+frame.pack(pady=20, padx=20, fill="both", expand=True)
 
 #Cut Long Path for show "Input Path" clearly
 def cut_path(path):
+    """ Cut Long Path """
     parts = list(pathlib.PurePath(path).parts)
     if len(parts) >= 4:
         parts [2:-1] = ['...']
     return pathlib.PurePath(*parts)
 
 def smart_or():
+    """ Condition for Smart Organizer """
     if check_var.get() == 'on':
         smart_status = True
     else:
@@ -35,34 +43,56 @@ def smart_or():
     #print(smart_status)
     return smart_status
 
-#Show dir
-my_dir = ct.CTkLabel(master=root,
-                            text="Current Directory: ",
-                            width=120,
-                            height=25,
-                            fg_color=("white", "gray20"),
-                            corner_radius=8)
-my_dir.place(relx=0.5, rely=0.2, anchor=tk.CENTER)
-
 # Create the button
-button = ct.CTkButton(master=root,
-                      image=img_1,
-                      text="Select Folder",
-                      width=200, 
-                      height=50,
-                      command=lambda: main_func(filedialog.askdirectory()))
-button.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
+button = ct.CTkButton(master=frame,
+                            text=' Select Folder ',
+                            image=image_2,
+                            corner_radius=8,
+                            width=210,
+                            height=30,
+                            font=('Arial', 20),
+                            border_spacing=10,
+                            fg_color='#844200',
+                            hover_color='#bab08b',
+                            command=lambda: main_func(filedialog.askdirectory()))
+button.pack(padx=20, pady=20)
 
 #Check Box for "Smart Folder" || "Classification from txt"
 check_var = ct.StringVar(value='off')
-check_box = ct.CTkCheckBox(master=root, 
-                          text='Smart Organize (Beta)', 
-                          width=100, 
-                          height=20,
-                          variable=check_var, 
-                          onvalue='on', offvalue='off', 
-                          command=lambda: smart_or())
-check_box.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+check_box = ct.CTkCheckBox(master=frame,
+                            text='Smart Organize (Beta)',
+                            width=100,
+                            height=20,
+                            corner_radius=10,
+                            font=("Arial", 18),
+                            text_color='#844200',
+                            fg_color='#844200',
+                            hover_color="#bab08b",
+                            variable=check_var,
+                            onvalue='on',offvalue='off',
+                            command=lambda: smart_or())
+check_box.pack(padx=2, pady=2)
+
+pic = ct.CTkButton(master=frame,
+                    image=image_1,
+                    text='',
+                    width=400,
+                    height=280,
+                    fg_color='#e4dfcb',
+                    hover_color='#e4dfcb')
+pic.pack(padx=25, pady=15)
+
+#Show dir
+my_dir = ct.CTkLabel(master=frame,
+                    text='Current Directory: ',
+                    font=("Arial", 18),
+                    width=120,
+                    height=25,
+                    text_color='white',
+                    fg_color='#a38a5c',
+                    corner_radius=8)
+my_dir.pack(padx=0, pady=0)
+
 
 audio = (".3ga", ".aac", ".ac3", ".aif", ".aiff",
          ".alac", ".amr", ".ape", ".au", ".dss",
@@ -83,25 +113,30 @@ smart_support = (".pdf", ".png", ".jpg")
 
 #text = ["Audio", "Video", "Screenshots", "Images", input_name, "Slide"]
 list_folder_name = ["Audios", "Videos", "Images", "Documents"]
-main_folder = ['Smart Categories', 'File Categories']
+main_folder = ['Smart File Categories', 'File Categories']
 list_smart_folder_name = {'Accounts': 'accounts', 'Biology': 'biology', 
                           'Com-Tech': 'com-tech', 'Geography': 'geography', 
                           'History': 'history', 'Maths': 'maths', 
                           'Physics': 'physics'}
 
 def is_audio(file):
+    """ Check {file} is Audio """
     return os.path.splitext(file)[1] in audio
 
 def is_video(file):
+    """ Check {file} is Video """
     return os.path.splitext(file)[1] in video
 
 def is_image(file):
+    """ Check {file} is Image """
     return os.path.splitext(file)[1] in img
 
 def is_doc(file):
+    """ Check {file} is Document """
     return os.path.splitext(file)[1] in doc
 
 def is_smart_support(file):
+    """ Check {file} for Smart Or. """
     return os.path.splitext(file)[1]
 
 
@@ -124,7 +159,7 @@ def create_folder(folder_name):
 
 #Main Function of Program
 def main_func(source):
-
+    """ Main Function """
     path = source
     os.chdir(path)
     my_dir.configure(text=f"Current Directory: {cut_path(path)}")

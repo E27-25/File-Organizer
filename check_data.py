@@ -16,3 +16,4 @@ for n, fol in enumerate(folders):
         print(f"{fol}: {count}")
 
 print(f"All Data: {sum_all}")
+
